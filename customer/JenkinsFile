@@ -24,7 +24,7 @@ pipeline {
         
         // Install the pipeline-utility-steps plugin to read information from pom.xml into env variables.
         // If optional file path left empty the step will try to read pom.xml in the current working directory
-        IMAGE = readMavenPom().getArtifactId()    
+        IMAGE_NAME = readMavenPom().getArtifactId()    // set as customerSvc in pom.xml
         VERSION = readMavenPom().getVersion()
     }  
   
@@ -108,9 +108,9 @@ pipeline {
             }
             steps {
                 sh """
-                docker build -t ${IMAGE} .
-                docker tag ${IMAGE} ${IMAGE}:${VERSION}
-                docker push ${IMAGE}:${VERSION}
+                docker build -t ${IMAGE_NAME} .
+                docker tag ${IMAGE_NAME} ${IMAGE_NAME}:${VERSION}
+                docker push ${IMAGE_NAME}:${VERSION}
                 """
             }
         }
