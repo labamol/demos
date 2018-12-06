@@ -1,33 +1,68 @@
 pipeline {
     agent any
+	
 	parameters {
 		booleanParam (
 		  defaultValue: false,
 		  description: 'Upload this version to repository?',
 		  name : 'UPLOAD_TO_REPOSITORY')
-	  
-  }
+		booleanParam (
+		  defaultValue: false,
+		  description: 'Target Deploy to Openshift?',
+		  name : 'DEPLOY_TO_OCP')
+		booleanParam (
+		  defaultValue: false,
+		  description: 'Target Deploy to Kubernetes?',
+		  name : 'DEPLOY_TO_K8S')
+	}
+	
+	environment {
+        DISABLE_AUTH = 'false'
+        WORKSPACE = pwd()
+        KUBECONFIG = pwd() + "/.kubeconfig"
+        OC_USER = credentials('OC_USER')
+        
+        // Install the pipeline-utility-steps plugin to read information from pom.xml into env variables.
+        // If optional file path left empty the step will try to read pom.xml in the current working directory
+        IMAGE = readMavenPom().getArtifactId()    
+        VERSION = readMavenPom().getVersion()
+    }  
+  
+    options {
+    	timeout(time: 20, unit: 'MINUTES') 
+    }
+    
     stages {
-        stage('Build') {
-            steps {
-                echo 'Running build automation'
-                sh './gradlew build --no-daemon'
-                archiveArtifacts artifacts: 'dist/trainSchedule.zip'
-            }
+        
+        stage('Fetch Source') {
+           steps {
+	        echo 'Fetching code from Git repository'
+	        
+	        git 'https://github.com/labamol/demos.git'
+	       }
         }
-        stage('Build Docker Image') {
-            when {
-                branch 'master'
-            }
+        
+        
+        stage('Build with Maven') {
             steps {
-                script {
-                    app = docker.build("willbla/train-schedule")
-                    app.inside {
-                        sh 'echo $(curl localhost:8080)'
-                    }
+                echo 'Running build automation in workspace:' ${WORKSPACE}
+				
+				sh """
+	            set +x	            
+	            mvn build-helper:parse-version versions:set -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.incrementalVersion}-BUILD-\${BUILD_NUMBER} versions:commit
+	            mvn clean install                
+                """
+                                
+                archiveArtifacts artifacts: '**/target/*.jar'
+                
+                if (params.DEPLOY_TO_OCP) {
+                	cp ${WORKSPACE}//target/*.jar ${WORKSPACE}//target/s2i-build/deployments/
                 }
+
+                
             }
         }
+        
         
 		stage('Deploy to repository') {
 			when {
@@ -45,13 +80,43 @@ pipeline {
 				echo 'Tagging with version in SCM '
 				sh 'mvn -Dusername="jenkins" scm:tag'
 			  }
-	}
+		}
 		
 		
+		stage('Quality Analysis') {
+            environment {
+                SONAR = credentials('sonar') 
+            }
+            parallel {     
+                stage ("Integration Test") {
+                    steps {
+                        echo 'Run integration tests here...'
+                    }
+                }
+                stage("Sonar Scan") {
+                    steps {
+                        sh "mvn sonar:sonar -Dsonar.login=$SONAR_PSW"
+                    }
+                }
+            }
+        }
+        
+        
+        stage('Build and Publish Image') {
+            when {
+                branch 'master'    
+            }
+            steps {
+                sh """
+                docker build -t ${IMAGE} .
+                docker tag ${IMAGE} ${IMAGE}:${VERSION}
+                docker push ${IMAGE}:${VERSION}
+                """
+            }
+        }
+        
 		
-		
-		
-		stage('Push Docker Image') {
+		stage('Push Docker Image to Docker Hub') {
             when {
                 branch 'master'
             }
@@ -64,26 +129,128 @@ pipeline {
                 }
             }
         }
-        stage('DeployToProduction') {
+        
+        
+        stage('DeployToK8sDev') {
             when {
                 branch 'master'
             }
             steps {
-                input 'Deploy to Production?'
+                input 'Deploy to K8s Dev?'
+                
                 milestone(1)
-                withCredentials([usernamePassword(credentialsId: 'webserver_login', usernameVariable: 'USERNAME', passwordVariable: 'USERPASS')]) {
-                    script {
-                        sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker pull willbla/train-schedule:${env.BUILD_NUMBER}\""
-                        try {
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker stop train-schedule\""
-                            sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker rm train-schedule\""
-                        } catch (err) {
-                            echo: 'caught error: $err'
-                        }
-                        sh "sshpass -p '$USERPASS' -v ssh -o StrictHostKeyChecking=no $USERNAME@$prod_ip \"docker run --restart always --name train-schedule -p 8080:8080 -d willbla/train-schedule:${env.BUILD_NUMBER}\""
-                    }
-                }
+                
+                // Install Kubernetes Continuous Deploy Plugin to Jenkins
+                kubernetesDeploy(
+                    kubeconfigId: 'kubeconfig',
+                    configs: 'customerSvc-deployment.yml',
+                    enableConfigSubstitution: true
+                )    
             }
+        }
+        
+        
+        stage('Create OCP Image Builder') {
+	    	steps {
+		    	script {
+		        	openshift.withCluster() {
+		          		openshift.withProject() {
+	          		    	if (!openshift.selector("bc", "customerSvc").exists()) {
+		          				
+		          				openshift.newBuild("--name=customerSvc", "--image-stream=redhat-openjdk18-openshift:1.1", "--binary")          		
+		          			}
+						}
+					}
+		        }
+			}
+		}
+		
+		
+		stage('OCP Build Image') {
+		      steps {
+		        	script {
+			          	openshift.withCluster() {
+			            	openshift.selector("bc", "customerSvc").startBuild("--from-file=target/customerSvc-spring.jar", "--wait=true")
+			          	}
+		      		}
+		      }
+    	}
+    
+    	
+    	stage('Promote for OCP-DEV') {
+      		steps {
+        		script {
+          			openshift.withCluster() {
+            			openshift.tag("customerSvc:latest", "customerSvc:dev")
+          			}
+        		}
+      		}
+    	}
+    
+    	
+    	stage('Deploy to OCP-DEV') {
+		    steps {
+		        script {
+		            openshift.withCluster(){
+		            	openshift.withProject() {
+	          		    	if (!openshift.selector("dc", "customerSvc-dev").exists()) {
+		          				
+		          				openshift.newApp("customerSvc:dev", "--name=customerSvc-dev").narrow('svc').expose()          		
+		          			}
+						}
+					}    
+		        }
+		    }
+    	}
+    
+    
+		stage('Promote for OCP-STAGE') {
+      		steps {
+        		script {
+          			openshift.withCluster() {
+            			openshift.tag("customerSvc:dev", "customerSvc:stage")
+          			}
+        		}
+      		}
+    	}    
+    
+    
+    
+    	stage('Deploy to OCP-STAGE') {
+		    steps {
+		        script {
+		            openshift.withCluster(){
+		            	openshift.withProject() {
+	          		    	if (!openshift.selector("dc", "customerSvc-stage").exists()) {
+		          				
+		          				openshift.newApp("customerSvc:stage", "--name=customerSvc-stage").narrow('svc').expose()          		
+		          			}
+						}
+					}    
+		        }
+		    }
+    	}
+    
+       
+        
+       
+    }
+    
+    post {
+        always {
+            echo 'Finished'
+        }
+        success {
+            echo 'Success'
+        }
+        unstable {
+            echo 'Unstable'
+        }
+        failure {
+            echo 'Failed'
+        }
+        changed {
+            echo 'Changed'
         }
     }
 }
