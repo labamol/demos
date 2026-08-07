@@ -1,0 +1,56 @@
+{
+  "candidate_id": "CAND-100234",
+  "full_name": "Arjun Mehta",
+  "email": "arjun.mehta@example.com",
+  "persona": "Advanced candidate",
+  "lifecycle_stage": "candidate",
+  "country": "India",
+  "local_society": "CFA Society India",
+  "exams": [
+    {
+      "level": "Level I",
+      "status": "passed",
+      "result_date": "2023-03-21"
+    },
+    {
+      "level": "Level II",
+      "status": "passed",
+      "result_date": "2024-08-27"
+    },
+    {
+      "level": "Level III",
+      "status": "registered",
+      "scheduled_date": "2026-02-18"
+    }
+  ],
+  "work_experience": [
+    {
+      "job_title": "Equity Research Associate",
+      "employer": "Meridian Capital Advisors",
+      "employer_type": "asset manager",
+      "role_description": "Perform financial analysis and valuation of mid-cap industrials, prepare investment recommendation notes for the portfolio committee, and maintain administrative reporting for the research desk.",
+      "activities": [
+        "Financial analysis of company filings",
+        "Discounted cash flow valuation",
+        "Investment recommendation memos",
+        "Sector research",
+        "Administrative reporting of desk activity"
+      ],
+      "start_date": "2023-01-09",
+      "end_date": null,
+      "months": 30,
+      "investment_time_pct": 80
+    }
+  ],
+  "references": [
+    {
+      "name": "Priya Raman",
+      "relationship": "Supervisor - Head of Research",
+      "status": "identified",
+      "is_member": true
+    }
+  ],
+  "professional_conduct_declared": false,
+  "membership_application_started": false,
+  "dues_paid": false
+}

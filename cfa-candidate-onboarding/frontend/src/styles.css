@@ -1,0 +1,107 @@
+:root {
+  --bg: #0f172a;
+  --panel: #ffffff;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --brand: #1d4ed8;
+  --ok: #16a34a;
+  --warn: #d97706;
+  --bad: #dc2626;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  color: #0f172a;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: #f1f5f9; }
+
+header.app-header {
+  background: var(--bg);
+  color: #fff;
+  padding: 18px 28px;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+header.app-header h1 { font-size: 18px; margin: 0; }
+header.app-header span { color: #94a3b8; font-size: 13px; }
+
+.layout { display: grid; grid-template-columns: 320px 1fr; gap: 20px; padding: 20px 28px; align-items: start; }
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+.card h2 { font-size: 15px; margin: 0 0 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.card h3 { font-size: 14px; margin: 14px 0 6px; }
+
+.file-item {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  background: #fff;
+}
+.file-item:hover { border-color: var(--brand); }
+.file-item.selected { border-color: var(--brand); background: #eff6ff; }
+.file-item strong { display: block; font-size: 14px; }
+.file-item small { color: var(--muted); }
+
+button {
+  background: var(--brand);
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  padding: 9px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+button:disabled { background: #94a3b8; cursor: not-allowed; }
+button.secondary { background: #fff; color: var(--brand); border: 1px solid var(--brand); }
+
+input[type="text"], textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.tabs button { background: #fff; color: #334155; border: 1px solid var(--line); }
+.tabs button.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+.progress { background: #e2e8f0; border-radius: 999px; height: 10px; overflow: hidden; }
+.progress > div { height: 100%; background: var(--brand); }
+
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.metric { border: 1px solid var(--line); border-radius: 8px; padding: 12px; }
+.metric .value { font-size: 26px; font-weight: 600; }
+.metric .label { color: var(--muted); font-size: 12px; text-transform: uppercase; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: 11px; }
+
+.badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+.badge.complete, .badge.verified, .badge.ok { background: #dcfce7; color: var(--ok); }
+.badge.in_progress, .badge.partially_complete, .badge.pending { background: #fef3c7; color: var(--warn); }
+.badge.not_started, .badge.error { background: #fee2e2; color: var(--bad); }
+.badge.skipped { background: #e2e8f0; color: var(--muted); }
+
+ul.plain { margin: 6px 0; padding-left: 18px; }
+ul.plain li { margin-bottom: 4px; font-size: 14px; }
+
+.month-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+.action { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; font-size: 14px; }
+.action small { display: block; color: var(--muted); }
+.action.done > label { text-decoration: line-through; color: var(--muted); }
+
+.error { background: #fee2e2; color: var(--bad); padding: 10px 12px; border-radius: 8px; margin-bottom: 12px; }
+.notice { background: #eff6ff; border-left: 3px solid var(--brand); padding: 10px 12px; font-size: 14px; }
+.muted { color: var(--muted); font-size: 13px; }
+.mono { font-family: ui-monospace, monospace; font-size: 12px; }

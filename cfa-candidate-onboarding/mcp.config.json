@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "candidate-files": {
+      "command": "python",
+      "args": [
+        "-m",
+        "backend.app.mcp.file_server"
+      ],
+      "env": {
+        "DATA_DIR": "./data/mock"
+      },
+      "description": "Local directory storage server exposing candidate profile and document files as MCP resources/tools."
+    }
+  }
+}

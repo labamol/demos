@@ -1,0 +1,76 @@
+{
+  "candidate_id": "CAND-100871",
+  "full_name": "Aisha Khan",
+  "email": "aisha.khan@example.com",
+  "persona": "Newly eligible Charterholder applicant",
+  "lifecycle_stage": "candidate",
+  "country": "United Arab Emirates",
+  "local_society": "CFA Society Emirates",
+  "exams": [
+    {
+      "level": "Level I",
+      "status": "passed",
+      "result_date": "2021-07-27"
+    },
+    {
+      "level": "Level II",
+      "status": "passed",
+      "result_date": "2022-08-23"
+    },
+    {
+      "level": "Level III",
+      "status": "passed",
+      "result_date": "2024-08-20"
+    }
+  ],
+  "work_experience": [
+    {
+      "job_title": "Investment Analyst",
+      "employer": "Gulf Pension Partners",
+      "employer_type": "pension fund",
+      "role_description": "Portfolio construction support, asset allocation modelling and investment risk monitoring across multi-asset mandates.",
+      "activities": [
+        "Asset allocation modelling",
+        "Portfolio rebalancing analysis",
+        "Investment risk reporting",
+        "Manager due diligence"
+      ],
+      "start_date": "2020-06-01",
+      "end_date": "2024-05-31",
+      "months": 48,
+      "investment_time_pct": 90
+    },
+    {
+      "job_title": "Senior Investment Analyst",
+      "employer": "Gulf Pension Partners",
+      "employer_type": "pension fund",
+      "role_description": "Lead investment research and client advisory for the growth sleeve; present investment recommendations to the investment committee.",
+      "activities": [
+        "Investment research",
+        "Client advisory",
+        "Investment recommendations"
+      ],
+      "start_date": "2024-06-01",
+      "end_date": null,
+      "months": 14,
+      "investment_time_pct": 95
+    }
+  ],
+  "references": [
+    {
+      "name": "Omar Haddad",
+      "relationship": "Supervisor - CIO",
+      "status": "identified",
+      "is_member": true
+    },
+    {
+      "name": "Lena Fischer",
+      "relationship": "Colleague - Portfolio Manager",
+      "status": "not_started",
+      "is_member": true
+    }
+  ],
+  "professional_conduct_declared": false,
+  "membership_application_started": false,
+  "dues_paid": false
+}

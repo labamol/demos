@@ -1,0 +1,47 @@
+{
+  "candidate_id": "CAND-101990",
+  "full_name": "Rohan Patel",
+  "email": "rohan.patel@example.com",
+  "persona": "Early candidate with non-qualifying experience",
+  "lifecycle_stage": "candidate",
+  "country": "United Kingdom",
+  "local_society": "CFA Society United Kingdom",
+  "exams": [
+    {
+      "level": "Level I",
+      "status": "passed",
+      "result_date": "2025-02-25"
+    },
+    {
+      "level": "Level II",
+      "status": "scheduled",
+      "scheduled_date": "2026-05-19"
+    },
+    {
+      "level": "Level III",
+      "status": "not_started"
+    }
+  ],
+  "work_experience": [
+    {
+      "job_title": "Operations Analyst",
+      "employer": "Northbank Securities",
+      "employer_type": "bank",
+      "role_description": "Trade settlement reconciliation, client onboarding paperwork and routine operational reporting for the trading desk.",
+      "activities": [
+        "Back-office reconciliation",
+        "Client onboarding paperwork",
+        "Routine operational reporting",
+        "Data entry"
+      ],
+      "start_date": "2024-04-01",
+      "end_date": null,
+      "months": 16,
+      "investment_time_pct": 20
+    }
+  ],
+  "references": [],
+  "professional_conduct_declared": false,
+  "membership_application_started": false,
+  "dues_paid": false
+}
