@@ -110,8 +110,10 @@ Open **`cfa_sdd/` as the workspace root** in VS Code (the Spec Kit scripts resol
 time, starting with 001:
 
 ```text
-# 1. Point the session at the feature
+# 1. Point the session at the feature (both variables — the helper scripts
+#    resolve the directory from SPECIFY_FEATURE_DIRECTORY or .specify/feature.json)
 export SPECIFY_FEATURE=001-agentic-platform-foundation
+export SPECIFY_FEATURE_DIRECTORY=specs/001-agentic-platform-foundation
 
 # 2. (Optional but recommended) de-risk ambiguity in the spec
 /speckit-clarify
