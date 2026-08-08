@@ -1,0 +1,61 @@
+{
+  "candidate_id": "MEM-204512",
+  "full_name": "Neha Sharma",
+  "email": "neha.sharma@example.com",
+  "persona": "Existing member",
+  "lifecycle_stage": "member",
+  "country": "India",
+  "local_society": "CFA Society Mumbai",
+  "exams": [
+    {
+      "level": "Level I",
+      "status": "passed",
+      "result_date": "2015-06-06"
+    },
+    {
+      "level": "Level II",
+      "status": "passed",
+      "result_date": "2016-06-04"
+    },
+    {
+      "level": "Level III",
+      "status": "passed",
+      "result_date": "2017-06-03"
+    }
+  ],
+  "work_experience": [
+    {
+      "job_title": "Portfolio Manager",
+      "employer": "Indus Asset Management",
+      "employer_type": "asset manager",
+      "role_description": "Manage a large-cap equity portfolio, lead investment research and set asset allocation for the fund.",
+      "activities": [
+        "Portfolio management",
+        "Investment research",
+        "Asset allocation",
+        "Investment risk management"
+      ],
+      "start_date": "2017-09-01",
+      "end_date": null,
+      "months": 96,
+      "investment_time_pct": 100
+    }
+  ],
+  "references": [
+    {
+      "name": "Rahul Desai",
+      "relationship": "Supervisor - Head of Equities",
+      "status": "verified",
+      "is_member": true
+    },
+    {
+      "name": "Ananya Iyer",
+      "relationship": "Colleague - Charterholder",
+      "status": "verified",
+      "is_member": true
+    }
+  ],
+  "professional_conduct_declared": true,
+  "membership_application_started": true,
+  "dues_paid": true
+}

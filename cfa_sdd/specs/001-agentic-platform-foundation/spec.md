@@ -196,7 +196,9 @@ invoke one directly with a payload and receive a structured response.
 - A single user drives the demo at a time; multi-tenant isolation and horizontal scaling are out of
   scope.
 - The database, file storage and application all run on the same machine.
-- Profile files are hand-authored JSON documents that conform to a documented shape.
+- Profile files are hand-authored JSON documents conforming to `data/profile.schema.json`, and the
+  four profiles in `data/mock/applications/` are supplied with this package rather than authored
+  during implementation.
 - Deployment configuration is limited to a dependency manifest, an environment file and a JSON
   configuration file for the file-access service, per the constitution.
 - Features 002–007 depend on this feature and are built on top of it.

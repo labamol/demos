@@ -162,8 +162,10 @@ action differs accordingly.
 - **SC-001**: For every synthetic profile, the sum of weighted category contributions equals the
   reported score exactly.
 - **SC-002**: Repeated assessment of an unchanged profile returns an identical score 100% of the time.
-- **SC-003**: The four synthetic personas produce clearly separated scores spanning early-stage to
-  fully-ready, so a reviewer can distinguish stages at a glance.
+- **SC-003**: The four supplied profiles in `data/mock/applications/` produce exactly these scores —
+  Rohan Patel 15%, Arjun Mehta 42%, Aisha Khan 70%, Neha Sharma 100% — spanning early-stage to
+  fully-ready so a reviewer can distinguish stages at a glance. The derivation is worked through in
+  `data/mock/README.md`.
 - **SC-004**: A reviewer can reconstruct the score by hand from the published weights and the profile
   data, with no hidden adjustments.
 - **SC-005**: Assessment completes successfully for all profiles with no language-model credential

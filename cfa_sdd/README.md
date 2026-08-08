@@ -5,14 +5,10 @@ A ready-to-execute [GitHub Spec Kit](https://github.com/github/spec-kit) workspa
 specifications covering the POC capability list, the Spec Kit skills for GitHub Copilot agents, and
 stack-specific agent skills for the target technology stack.
 
-This folder is **specification and process only** — it contains no application code. The dev team
-runs the Spec Kit commands here to plan, task and implement each feature.
-
-> The sibling folder `../cfa-candidate-onboarding/` is a working reference implementation of the same
-> POC. Treat it as a read-only exemplar. Nothing in this package modifies it.
->
-> Starting a POC in a *different* domain on the same stack? Use `../agentic-poc-skills/`, the
-> domain-neutral extraction of this package's skills and constitution.
+This folder is **self-contained**: everything needed to go from specification to a working POC is
+here. It contains no application code — the dev team runs the Spec Kit commands to plan, task and
+implement each feature — but it does ship the synthetic fixtures and the input contract those
+specifications are written against.
 
 ## What's in here
 
@@ -28,6 +24,12 @@ cfa_sdd/
 │   ├── templates/                       # spec / plan / tasks / checklist templates
 │   ├── scripts/bash/                    # Feature scaffolding + prerequisite scripts
 │   └── workflows/                       # Spec Kit workflow definition
+├── data/
+│   ├── profile.schema.json              # Input contract for a candidate/member profile
+│   └── mock/
+│       ├── README.md                    # The four personas + how their scores are derived
+│       ├── applications/*.json          # Synthetic profiles, selectable from the UI
+│       └── documents/<candidate_id>/    # Supporting documents, read over MCP
 ├── specs/
 │   ├── 001-agentic-platform-foundation/spec.md
 │   ├── 002-lifecycle-dashboard/spec.md
@@ -70,6 +72,23 @@ Each `spec.md` is implementation-free and contains prioritized user stories with
 acceptance scenarios, edge cases, numbered functional requirements, key entities, measurable success
 criteria and explicit assumptions.
 
+## The fixtures are part of the specification
+
+`data/` is not sample data to be replaced — the acceptance scenarios and `SC-` success criteria in
+`specs/` are written against these four personas, and the implementation must reproduce their
+expected readiness scores exactly:
+
+| Persona | Stage | Expected readiness |
+| --- | --- | --- |
+| Rohan Patel — early candidate, non-qualifying experience | candidate | 15% |
+| Arjun Mehta — advanced candidate | candidate | 42% |
+| Aisha Khan — eligible but application not started | candidate | 70% |
+| Neha Sharma — existing member | member | 100% |
+
+Each score is reproducible by hand from the weights published in the `cfa-poc-domain` skill; the
+derivation is worked through in `data/mock/README.md`. Every profile must validate against
+`data/profile.schema.json`, which is the input contract for the entire workflow.
+
 ## Agent skills
 
 Spec Kit workflow skills (installed by `specify init`):
@@ -95,16 +114,43 @@ Stack and domain skills added for this POC:
 
 ## Prerequisites
 
+To run the Spec Kit commands:
+
 - Python 3.11+ and [uv](https://docs.astral.sh/uv/)
 - Git
 - GitHub Copilot (agent mode) in VS Code, or any agent that reads `.github/skills/`
 
-Install the Specify CLI (only needed to re-scaffold or upgrade; the package is already initialized):
+The Specify CLI is only needed to re-scaffold or upgrade the workspace — the package is already
+initialized:
 
 ```bash
 uv tool install specify-cli --from git+https://github.com/github/spec-kit.git@v0.16.0
 specify check
 ```
+
+### Environment for the implementation
+
+The stack the constitution fixes needs the following available before `/speckit-implement` on
+feature 001 can produce a runnable system:
+
+| Component | Version | Notes |
+| --- | --- | --- |
+| Python | 3.11+ | One virtualenv at the project root. The MCP server must be spawned with `sys.executable` so the child process shares it. |
+| PostgreSQL | 14+ | Running locally and reachable over TCP. |
+| Node.js | 18+ | With npm, for the React client. |
+| OpenAI API key | — | **Optional.** The system must run end to end without one (Principle V). |
+
+Create the database before the first run — the DDL script written in feature 001 assumes the
+database and role already exist:
+
+```bash
+sudo -u postgres psql -c "CREATE USER onboarding WITH PASSWORD 'onboarding';"
+sudo -u postgres psql -c "CREATE DATABASE onboarding OWNER onboarding;"
+```
+
+The resulting connection string, the path to `data/mock`, and the optional API key all belong in
+`.env` (documented in a committed `.env.example`) — never in code. See the `cfa-deployment-config`
+skill for the configuration constraint this must respect.
 
 ## How the dev team executes a feature
 
