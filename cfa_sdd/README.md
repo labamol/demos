@@ -10,6 +10,9 @@ runs the Spec Kit commands here to plan, task and implement each feature.
 
 > The sibling folder `../cfa-candidate-onboarding/` is a working reference implementation of the same
 > POC. Treat it as a read-only exemplar. Nothing in this package modifies it.
+>
+> Starting a POC in a *different* domain on the same stack? Use `../agentic-poc-skills/`, the
+> domain-neutral extraction of this package's skills and constitution.
 
 ## What's in here
 
