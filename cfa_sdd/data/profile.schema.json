@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/labamol/demos/cfa_sdd/data/profile.schema.json",
+  "title": "Synthetic candidate/member profile",
+  "description": "The documented shape referenced by specs/001-agentic-platform-foundation. Every file in data/mock/applications/ MUST validate against this schema, and the implementation's profile model MUST accept every one of them. This is the input contract for the whole workflow; treat a change here as a contract change (see the cfa-pydantic-models skill).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "candidate_id",
+    "full_name",
+    "email",
+    "persona",
+    "lifecycle_stage",
+    "exams",
+    "work_experience",
+    "references"
+  ],
+  "properties": {
+    "candidate_id": {
+      "type": "string",
+      "pattern": "^(CAND|MEM)-[0-9]{6}$",
+      "description": "Stable identifier. CAND- for candidates and membership applicants, MEM- for existing members. Also the directory name under data/mock/documents/."
+    },
+    "full_name": { "type": "string", "minLength": 1 },
+    "email": { "type": "string", "format": "email" },
+    "persona": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Free-text label shown in the profile picker, e.g. 'Advanced candidate'. Never parsed or branched on."
+    },
+    "lifecycle_stage": {
+      "type": "string",
+      "enum": ["candidate", "membership_applicant", "member"],
+      "description": "Drives lifecycle-aware behaviour in features 002 and 007."
+    },
+    "country": { "type": "string" },
+    "local_society": {
+      "type": ["string", "null"],
+      "description": "Local CFA society, used for society/event recommendations in feature 007."
+    },
+    "exams": {
+      "type": "array",
+      "description": "One entry per level the person has engaged with. An absent level is treated as not started.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["level", "status"],
+        "properties": {
+          "level": { "type": "string", "enum": ["Level I", "Level II", "Level III"] },
+          "status": {
+            "type": "string",
+            "enum": ["passed", "failed", "scheduled", "registered", "not_started"]
+          },
+          "result_date": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "Set when status is passed or failed."
+          },
+          "scheduled_date": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "Set when status is scheduled or registered."
+          }
+        }
+      }
+    },
+    "work_experience": {
+      "type": "array",
+      "description": "Input to feature 004. May be empty for an early candidate.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "job_title",
+          "employer",
+          "employer_type",
+          "role_description",
+          "start_date",
+          "months",
+          "investment_time_pct"
+        ],
+        "properties": {
+          "job_title": { "type": "string", "minLength": 1 },
+          "employer": { "type": "string", "minLength": 1 },
+          "employer_type": {
+            "type": "string",
+            "description": "Free text, e.g. 'asset manager', 'bank', 'pension fund', 'corporate', 'consultancy'. Informs but never by itself decides qualification."
+          },
+          "role_description": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Untrusted free text. Classified by the evaluator and passed to the LLM as data, never as instructions."
+          },
+          "activities": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Discrete activities, each classified as likely qualifying or non-qualifying."
+          },
+          "start_date": { "type": "string", "format": "date" },
+          "end_date": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "null means currently employed."
+          },
+          "months": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total employment duration in months. Authored explicitly rather than derived from the dates, so fixtures stay stable over time."
+          },
+          "investment_time_pct": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Percentage of time spent on investment decision-making. 0-100 integer, never a 0-1 fraction. qualifying_months = months * investment_time_pct / 100."
+          }
+        }
+      }
+    },
+    "references": {
+      "type": "array",
+      "description": "Input to the reference-tracking requirement. Two are required for membership.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "relationship", "status"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "relationship": { "type": "string", "minLength": 1 },
+          "status": {
+            "type": "string",
+            "enum": ["not_started", "identified", "requested", "submitted", "verified"],
+            "description": "Only 'submitted' and 'verified' count as satisfied; anything earlier is an outstanding action."
+          },
+          "is_member": {
+            "type": "boolean",
+            "description": "Whether the referee is already a CFA Institute member."
+          }
+        }
+      }
+    },
+    "professional_conduct_declared": { "type": "boolean", "default": false },
+    "membership_application_started": { "type": "boolean", "default": false },
+    "dues_paid": { "type": "boolean", "default": false },
+    "documents": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Populated at load time from data/mock/documents/<candidate_id>/, not authored in the file."
+    }
+  }
+}

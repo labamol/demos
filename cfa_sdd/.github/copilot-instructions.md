@@ -10,8 +10,10 @@ You are working in a **spec-driven** project. Read this file before any task in 
    `/speckit-constitution` → `/speckit-specify` → `/speckit-clarify` → `/speckit-plan` →
    `/speckit-tasks` → `/speckit-analyze` → `/speckit-implement`. Do not write feature code before the
    owning feature has an approved `spec.md`, `plan.md` and `tasks.md` in `specs/`.
-3. **Stay inside `cfa_sdd/`.** Never modify the sibling `cfa-candidate-onboarding/` reference
-   implementation. It is a read-only exemplar of the target architecture.
+3. **`data/` is specification, not sample data.** The four synthetic profiles and their expected
+   readiness scores are what the acceptance criteria are written against. Every profile must validate
+   against `data/profile.schema.json`. Do not edit, replace or "improve" a fixture to make an
+   implementation pass — fix the implementation.
 4. **Feature 001 first.** `001-agentic-platform-foundation` is a prerequisite for features 002–007.
 
 ## Feature map

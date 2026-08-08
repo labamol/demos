@@ -45,14 +45,18 @@ Estimated qualifying months = employment months x investment-time share. Overlap
 
 ## Synthetic personas
 
-| Persona | Stage | Situation |
-| --- | --- | --- |
-| Rohan Patel | early candidate | Just starting; minimal exams and experience |
-| Arjun Mehta | advanced candidate | Passed Levels I and II, preparing for Level III, ~30 months experience |
-| Aisha Khan | applicant | Passed all levels, sufficient experience, has not started the application |
-| Neha Sharma | member | Existing charterholder/member |
+Supplied as fixtures in `data/mock/applications/`, validated by `data/profile.schema.json`. These are
+specification, not sample data: never edit a fixture to make an implementation pass.
 
-Expect readiness roughly in the bands: early ~15, advanced ~40s, applicant ~70, member 100.
+| Persona | Id | Stage | Situation | Readiness |
+| --- | --- | --- | --- | --- |
+| Rohan Patel | `CAND-101990` | early candidate | One level passed; mostly non-qualifying operations work; no references | 15 |
+| Arjun Mehta | `CAND-100234` | advanced candidate | Passed Levels I and II, preparing for Level III, 30 months at 80% investment time | 42 |
+| Aisha Khan | `CAND-100871` | applicant | Passed all levels, sufficient experience, has not started the application | 70 |
+| Neha Sharma | `MEM-204512` | member | Existing charterholder; everything satisfied | 100 |
+
+The scores are exact, not bands — each is reproducible by hand from the weights above, and
+`data/mock/README.md` works the derivation through.
 
 ## The guidance-only boundary
 
