@@ -1,1 +1,7 @@
+# demos
 
+| Folder | What it is |
+| --- | --- |
+| `cfa-candidate-onboarding/` | Working POC: CFA candidate-to-member onboarding agentic AI app (LangGraph + A2A + MCP + Pydantic + Postgres + React) |
+| `cfa_sdd/` | Spec-driven development package for that POC: constitution, 7 feature specs, Spec Kit + agent skills for GitHub Copilot |
+| `agentic-poc-skills/` | Domain-neutral starter pack extracted from `cfa_sdd/`: 9 reusable stack skills plus constitution and domain-skill templates |
